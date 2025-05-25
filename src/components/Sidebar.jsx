@@ -14,9 +14,11 @@ const Sidebar = () => {
     getUsers();
   }, [getUsers]);
 
-  const filteredUsers = showOnlineOnly
+  const filteredUsers = (showOnlineOnly
     ? users.filter((user) => onlineUsers.includes(user._id))
-    : users;
+    : users
+  ).sort((a, b) => new Date(b.lastMessageTime) - new Date(a.lastMessageTime));
+  
 
   if (isUsersLoading) return <SidebarSkeleton />;
 
@@ -53,19 +55,21 @@ const Sidebar = () => {
               ${selectedUser?._id === user._id ? "bg-base-300 ring-1 ring-base-300" : ""}
             `}
           >
-            <div className="relative mx-auto lg:mx-0">
-              <img
-                src={user.profilePic || "/avatar.png"}
-                alt={user.name}
-                className="size-12 object-cover rounded-full"
-              />
-              {onlineUsers.includes(user._id) && (
-                <span
-                  className="absolute bottom-0 right-0 size-3 bg-green-500 
-                  rounded-full ring-2 ring-zinc-900"
-                />
-              )}
-            </div>
+           <div className="relative mx-auto lg:mx-0">
+  <img
+    src={user.profilePic || "/avatar.png"}
+    alt={user.name}
+    className="size-12 object-cover rounded-full"
+  />
+  {onlineUsers.includes(user._id) && (
+    <span className="absolute bottom-0 right-0 size-3 bg-green-500 rounded-full ring-2 ring-zinc-900" />
+  )}
+
+{user.hasUnread && (
+  <span className="absolute -top-1 -right-1 bg-green-500 w-3 h-3 rounded-full ring-2 ring-zinc-900" />
+)}
+
+</div>
 
             {/* User info - only visible on larger screens */}
             <div className="hidden lg:block text-left min-w-0">

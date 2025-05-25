@@ -1,9 +1,6 @@
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios.js";
 import toast from "react-hot-toast";
-import { io } from "socket.io-client";
-
-const BASE_URL = import.meta.env.MODE === "development" ? "http://localhost:5001" : "/";
 
 export const useAuthStore = create((set, get) => ({
   authUser: null,
@@ -12,14 +9,18 @@ export const useAuthStore = create((set, get) => ({
   isUpdatingProfile: false,
   isCheckingAuth: true,
   onlineUsers: [],
-  socket: null,
+  isResetting: false,
+  isRequestingReset: false,
+  resetCode: "",
+
+  setEmail: (email) => set({ email }),
+  setResetCodeInStore: (resetCode) => set({ resetCode }),
 
   checkAuth: async () => {
     try {
-      const res = await axiosInstance.get("/auth/check");
-
+      const res = await axiosInstance.get("/check/");
       set({ authUser: res.data });
-      get().connectSocket();
+      // Removed socket connection
     } catch (error) {
       console.log("Error in checkAuth:", error);
       set({ authUser: null });
@@ -28,15 +29,57 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
+  requestPasswordReset: async ({ email }) => {
+    set({ isRequestingReset: true });
+    try {
+      const res = await axiosInstance.post("/forgot-password/", { email });
+      toast.success("Reset code sent to your email");
+      set({ email });
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to request reset");
+    } finally {
+      set({ isRequestingReset: false });
+    }
+  },
+
+  verifyResetCode: async ({ reset_code }) => {
+    try {
+      await axiosInstance.post("/verify-email/", { reset_code });
+      toast.success("Success");
+      set({ resetCode: reset_code });
+      console.log("Verified reset code:", reset_code);
+      return true;
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Invalid code");
+      return false;
+    }
+  },
+
+  resetPassword: async ({ new_password, confirm_password }) => {
+    const { resetCode } = useAuthStore.getState();
+    console.log("Reset code being sent:", resetCode);
+    set({ isResetting: true });
+    try {
+      await axiosInstance.post("/reset-password/", {
+        reset_code: resetCode,
+        new_password,
+        confirm_password,
+      });
+    } catch (error) {
+      console.error("Reset password failed:", error.response?.data || error.message);
+      throw error;
+    } finally {
+      set({ isResetting: false });
+    }
+  },
+
   signup: async (data) => {
     set({ isSigningUp: true });
     try {
-      const res = await axiosInstance.post("/auth/signup", data);
-      set({ authUser: res.data });
-      toast.success("Account created successfully");
-      get().connectSocket();
+      const res = await axiosInstance.post("/register/", data);
+      toast.success("Account created successfully. Please confirm.");
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Registration failed");
     } finally {
       set({ isSigningUp: false });
     }
@@ -45,61 +88,61 @@ export const useAuthStore = create((set, get) => ({
   login: async (data) => {
     set({ isLoggingIn: true });
     try {
-      const res = await axiosInstance.post("/auth/login", data);
+      const res = await axiosInstance.post("/login/", data);
+      const { tokens } = res.data;
+      console.log(data)
+      // Save tokens to localStorage or cookies as needed
+      localStorage.setItem("access_token", tokens.access);
+      localStorage.setItem("refresh_token", tokens.refresh);
+  
       set({ authUser: res.data });
       toast.success("Logged in successfully");
-
-      get().connectSocket();
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Login failed");
     } finally {
       set({ isLoggingIn: false });
     }
-  },
-
+  },  
   logout: async () => {
     try {
-      await axiosInstance.post("/auth/logout");
+      const refresh = localStorage.getItem("refresh_token");
+  
+      await axiosInstance.post("/logout/", { refresh });
+  
+      // Удаляем токены
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
+  
       set({ authUser: null });
       toast.success("Logged out successfully");
-      get().disconnectSocket();
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.error || "Logout failed");
     }
   },
-
+  
   updateProfile: async (data) => {
     set({ isUpdatingProfile: true });
     try {
-      const res = await axiosInstance.put("/auth/update-profile", data);
-      set({ authUser: res.data });
+      const res = await axiosInstance.put("profile/update/", data);
+      set((state) => ({
+        authUser: {
+          ...state.authUser, // ← сохранить имя и email
+          ...res.data         // ← обновить avatar
+        }
+      }));
       toast.success("Profile updated successfully");
     } catch (error) {
       console.log("error in update profile:", error);
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "Update failed");
     } finally {
       set({ isUpdatingProfile: false });
     }
   },
+  
 
-  connectSocket: () => {
+  // This now always returns false since there's no online user data
+  checkPostOwnership: (postAuthorId) => {
     const { authUser } = get();
-    if (!authUser || get().socket?.connected) return;
-
-    const socket = io(BASE_URL, {
-      query: {
-        userId: authUser._id,
-      },
-    });
-    socket.connect();
-
-    set({ socket: socket });
-
-    socket.on("getOnlineUsers", (userIds) => {
-      set({ onlineUsers: userIds });
-    });
-  },
-  disconnectSocket: () => {
-    if (get().socket?.connected) get().socket.disconnect();
+    return authUser && postAuthorId === authUser._id;
   },
 }));
