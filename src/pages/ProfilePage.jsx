@@ -27,6 +27,7 @@ const ProfilePage = () => {
     if (!path) return "/avatar.png";
     return path.startsWith("http") ? path : `${BASE_URL}${path}`;
   };
+  console.log(authUser.is_agent)
   return (
     <div className="h-screen h-[900px]">
       <div className="max-w-2xl mx-auto p-4 py-8">

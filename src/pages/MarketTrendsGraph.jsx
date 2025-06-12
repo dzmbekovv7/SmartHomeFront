@@ -24,19 +24,21 @@ export default function MarketTrends() {
     setLoading(true);
     setError(null);
 
-    axiosInstance.get('http://localhost:8000/market-trends/', { params: { start_date: startDate, end_date: endDate } })
+    axiosInstance.get('http://localhost:8000/market-trends/', {
+      params: { start_date: startDate, end_date: endDate },
+    })
       .then(res => {
         setData(res.data);
         setLoading(false);
       })
       .catch(() => {
-        setError('Ошибка при загрузке данных');
+        setError('Failed to load data.');
         setLoading(false);
       });
   }, [startDate, endDate]);
 
-  if (loading) return <p>Загрузка графиков...</p>;
-  if (error) return <p style={{ color: 'red' }}>{error}</p>;
+  if (loading) return <p style={{ textAlign: 'center', marginTop: 50 }}>Loading charts...</p>;
+  if (error) return <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>;
   if (!data) return null;
 
   const priceDates = data.priceTrend.map(d => d.date);
@@ -49,49 +51,59 @@ export default function MarketTrends() {
   const salesCounts = data.popularityRegion.map(r => r.sales_count);
 
   return (
-    <div style={{ maxWidth: 900, margin: '0 auto', padding: 20, fontFamily: 'Arial, sans-serif', lineHeight: 1.6 }}>
-      <h1 style={{ fontSize: 36, fontWeight: 'bold', marginBottom: 15 }}>
-        Анализ рынка и трендов
+    <div style={{
+      maxWidth: 1000,
+      margin: '0 auto',
+      padding: 24,
+      fontFamily: 'Segoe UI, sans-serif',
+      color: '#333'
+    }}>
+      <h1 style={{ fontSize: 40, fontWeight: '700', marginBottom: 20 }}>
+        Market Trends & Analysis
       </h1>
 
-      <p style={{ fontSize: 18, marginBottom: 25 }}>
-        Добро пожаловать в панель анализа рынка! Здесь собраны ключевые показатели, отражающие 
-        динамику цен, объемы продаж и популярность различных районов за выбранный вами период.
-        Эти данные позволят вам лучше понять поведение рынка, выявить тенденции и принять более
-        взвешенные бизнес-решения. Используйте фильтры для настройки даты и исследуйте информацию, 
-        чтобы получить полное представление о текущей ситуации.
+      <p style={{ fontSize: 18, marginBottom: 30 }}>
+        Welcome to the Market Insights Dashboard! This panel provides a comprehensive overview of key
+        performance indicators such as price trends, sales volumes, and regional popularity over a selected period.
+        Use the filters below to explore market behavior, identify trends, and make data-driven decisions.
       </p>
 
-      <div style={{ marginBottom: 30 }}>
+      <div style={{
+        display: 'flex',
+        gap: 20,
+        alignItems: 'center',
+        marginBottom: 40,
+        flexWrap: 'wrap'
+      }}>
         <label style={{ fontSize: 16 }}>
-          Начальная дата:{' '}
-          <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} max={endDate} />
-        </label>{' '}
+          Start Date:{' '}
+          <input
+            type="date"
+            value={startDate}
+            onChange={e => setStartDate(e.target.value)}
+            max={endDate}
+            style={{ padding: 6, borderRadius: 4, border: '1px solid #ccc' }}
+          />
+        </label>
         <label style={{ fontSize: 16 }}>
-          Конечная дата:{' '}
+          End Date:{' '}
           <input
             type="date"
             value={endDate}
             onChange={e => setEndDate(e.target.value)}
             min={startDate}
             max={new Date().toISOString().slice(0, 10)}
+            style={{ padding: 6, borderRadius: 4, border: '1px solid #ccc' }}
           />
         </label>
       </div>
 
       <Graph
-        title="Средняя цена по дате"
+        title="Average Price Over Time"
         description={
           <>
-            <p>
-              Этот график отображает изменения средней цены товаров в зависимости от даты. 
-              Анализируя тренды, можно заметить периоды роста и снижения цен, что важно для 
-              планирования продаж и маркетинговых кампаний.
-            </p>
-            <p>
-              Обратите внимание на пики и падения — они могут быть связаны с сезонными 
-              факторами, акциями или изменениями спроса.
-            </p>
+            <p>This line chart shows the changes in average product price over time.</p>
+            <p>Notice periods of price surges or drops — they could be driven by seasonal effects, discounts, or shifts in demand.</p>
           </>
         }
         data={[
@@ -100,24 +112,22 @@ export default function MarketTrends() {
             y: avgPrices,
             type: 'scatter',
             mode: 'lines+markers',
-            marker: { color: 'blue' },
+            marker: { color: '#007bff' },
           },
         ]}
-        layout={{ yaxis: { title: 'Средняя цена (₽)' }, xaxis: { title: 'Дата' }, margin: { t: 40, b: 40 } }}
+        layout={{
+          yaxis: { title: 'Average Price (₽)' },
+          xaxis: { title: 'Date' },
+          margin: { t: 40, b: 40 },
+        }}
       />
 
       <Graph
-        title="Объем продаж по дате"
+        title="Sales Volume Over Time"
         description={
           <>
-            <p>
-              Здесь показано количество проданных товаров по дням. Высокие значения отражают 
-              повышенный интерес покупателей и успешность маркетинговых активностей.
-            </p>
-            <p>
-              Сравнивайте пики объема продаж с изменениями средней цены — это поможет выявить 
-              оптимальные ценовые стратегии.
-            </p>
+            <p>This bar chart displays the number of products sold each day.</p>
+            <p>High bars represent spikes in customer activity, possibly due to promotions or seasonal demand.</p>
           </>
         }
         data={[
@@ -125,23 +135,22 @@ export default function MarketTrends() {
             x: volumeDates,
             y: volumes,
             type: 'bar',
-            marker: { color: 'purple' },
+            marker: { color: '#6f42c1' },
           },
         ]}
-        layout={{ yaxis: { title: 'Количество продаж' }, xaxis: { title: 'Дата' }, margin: { t: 40, b: 40 } }}
+        layout={{
+          yaxis: { title: 'Number of Sales' },
+          xaxis: { title: 'Date' },
+          margin: { t: 40, b: 40 },
+        }}
       />
 
       <Graph
-        title="Популярность районов"
+        title="Regional Sales Popularity"
         description={
           <>
-            <p>
-              Этот горизонтальный график демонстрирует, в каких районах происходит наибольшее количество продаж.
-              Такая информация поможет выявить локальные тренды и сфокусировать маркетинговые усилия.
-            </p>
-            <p>
-              Знание наиболее популярных районов позволяет точнее нацеливать рекламу и оптимизировать логистику.
-            </p>
+            <p>This horizontal bar chart highlights the regions with the highest number of sales.</p>
+            <p>Use this data to localize your marketing efforts and identify potential areas for expansion.</p>
           </>
         }
         data={[
@@ -150,24 +159,34 @@ export default function MarketTrends() {
             x: salesCounts,
             type: 'bar',
             orientation: 'h',
-            marker: { color: 'orange' },
+            marker: { color: '#fd7e14' },
           },
         ]}
-        layout={{ xaxis: { title: 'Количество продаж' }, margin: { t: 40, l: 100 } }}
+        layout={{
+          xaxis: { title: 'Sales Count' },
+          margin: { t: 40, l: 100 },
+        }}
       />
 
-      {/* Общий небольшой аналитический блок после всех графиков */}
-      <div style={{ backgroundColor: '#f9f9f9', padding: 20, borderRadius: 8, marginTop: 40, boxShadow: '0 0 10px rgba(0,0,0,0.05)' }}>
-        <h3 style={{ marginBottom: 15 }}>Краткий анализ данных</h3>
+      <div style={{
+        backgroundColor: '#f8f9fa',
+        padding: 24,
+        borderRadius: 12,
+        marginTop: 50,
+        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)'
+      }}>
+        <h3 style={{ fontSize: 22, fontWeight: '600', marginBottom: 12 }}>
+          Summary Analysis
+        </h3>
         <p>
-          По представленным графикам видно, что средняя цена имеет тенденцию к небольшим колебаниям, 
-          отражающим сезонные и рыночные изменения. Объем продаж демонстрирует несколько заметных пиков,
-          что может указывать на успешные акции или сезонный спрос. Районы с наибольшим количеством продаж
-          представляют собой ключевые точки интереса для дальнейшего развития бизнеса и маркетинга.
+          From the data above, we observe moderate fluctuations in average prices, likely reflecting seasonal or market-driven influences.
+          Sales volume shows multiple spikes that may indicate promotional success or increased consumer interest during specific periods.
         </p>
         <p>
-          Рекомендуется регулярно отслеживать эти показатели и использовать полученную информацию для
-          оперативного принятия решений по ценообразованию и управлению запасами.
+          Top-performing regions are valuable indicators of market hotspots and can guide future business development and logistics planning.
+        </p>
+        <p>
+          We recommend monitoring these KPIs regularly to adjust pricing, stock levels, and marketing strategies effectively.
         </p>
       </div>
     </div>
@@ -176,9 +195,15 @@ export default function MarketTrends() {
 
 function Graph({ title, description, data, layout }) {
   return (
-    <div style={{ marginBottom: 40 }}>
-      <h2 style={{ fontSize: 24, fontWeight: '600', marginBottom: 10 }}>{title}</h2>
-      <div style={{ maxWidth: 700, marginBottom: 20, color: '#444', fontSize: 16, lineHeight: 1.5 }}>
+    <div style={{ marginBottom: 50 }}>
+      <h2 style={{ fontSize: 26, fontWeight: '600', marginBottom: 10 }}>{title}</h2>
+      <div style={{
+        maxWidth: 700,
+        marginBottom: 20,
+        color: '#555',
+        fontSize: 16,
+        lineHeight: 1.6
+      }}>
         {description}
       </div>
       <Plot

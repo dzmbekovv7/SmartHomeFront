@@ -1,54 +1,100 @@
 import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronDown } from "lucide-react";
+import { Link } from "react-router-dom";
 
-const DropdownItem = ({ question, answer }) => {
-  const [open, setOpen] = useState(false);
-
-  return (
-    <div className="border-b border-gray-300 py-4 cursor-pointer">
-      <div
-        onClick={() => setOpen(!open)}
-        className="flex justify-between items-center text-lg font-semibold text-pink-600"
-      >
-        <span>{question}</span>
-        <span className="text-2xl select-none">{open ? '−' : '+'}</span>
-      </div>
-      {open && <p className="mt-3 text-gray-700">{answer}</p>}
-    </div>
-  );
-};
+const faqs = [
+  { question: "How do I start buying a house?", answer: "Begin by assessing your budget, getting pre-approved for a mortgage, and working with a trusted real estate agent." },
+  { question: "What should I look for during a house tour?", answer: "Check the foundation, roof condition, plumbing, electrical systems, and neighborhood amenities." },
+  { question: "How long does the buying process take?", answer: "Typically, it takes 30-60 days from offer acceptance to closing, but it can vary." },
+  { question: "Can I negotiate the price?", answer: "Yes, negotiation is common. Your agent can help you craft a strong offer." },
+  { question: "What is a home inspection?", answer: "A professional inspection to assess the condition of the house before purchase." },
+  { question: "Are there hidden costs when buying a house?", answer: "Yes, including closing costs, property taxes, insurance, and maintenance expenses." },
+  { question: "How do I sell my house through this website?", answer: "List your property with detailed photos and descriptions, and our agents will help you find buyers." },
+  { question: "Can I schedule a virtual tour?", answer: "Yes, many listings offer virtual tours for your convenience." },
+  { question: "What financing options are available?", answer: "We provide connections to various mortgage lenders with competitive rates." },
+  { question: "Is this website secure for transactions?", answer: "Absolutely, we use industry-standard security protocols to protect your data." },
+];
 
 export const FAQ = () => {
-  const faqs = [
-    { question: "Как рассчитывается стоимость дома?", answer: "Стоимость рассчитывается на основе введенных вами параметров: площадь, количество комнат, наличие бассейна, этажность и регион." },
-    { question: "Можно ли изменить параметры предсказания?", answer: "Да, вы можете изменить любые параметры в форме и получить новое предсказание в режиме реального времени." },
-    { question: "Поддерживаются ли все регионы Кыргызстана?", answer: "Мы работаем с основными регионами: Бишкек, Иссык-Кульская область, Чуйская, Ошская и Джалал-Абадская." },
-    { question: "Есть ли мобильное приложение?", answer: "В данный момент мобильное приложение в разработке, но наш сайт полностью адаптивен под любые устройства." },
-    { question: "Как работает модель предсказания?", answer: "Модель использует машинное обучение, обученное на исторических данных недвижимости, чтобы сделать точные оценки." },
-    { question: "Какие данные нужно вводить?", answer: "Вам нужно ввести площадь дома, количество комнат, ванные, этажи, наличие удобств и местоположение." },
-    { question: "Можно ли сохранить предсказание?", answer: "Пока функция сохранения недоступна, но мы работаем над её реализацией." },
-    { question: "Доступен ли сайт на других языках?", answer: "Скоро появится поддержка английского и кыргызского языков." },
-    { question: "Насколько точны предсказания?", answer: "Средняя точность модели составляет около 85%, но может варьироваться в зависимости от качества введённых данных." },
-    { question: "Как сообщить об ошибке?", answer: "Вы можете связаться с нами через форму обратной связи или написать на email поддержки." },
-    { question: "Сайт бесплатный?", answer: "Да, все функции сайта на данный момент бесплатны для пользователей." },
-    { question: "Могу ли я использовать сайт на телефоне?", answer: "Да, сайт полностью адаптирован под мобильные устройства." }
-  ];
+  const [openIndex, setOpenIndex] = useState(null);
+  const toggle = (index) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
 
   return (
-    <section className="max-w-4xl mx-auto px-6  h-[1000px]">
-      <h2 className="text-3xl font-bold text-center mb-8 text-gray-800 pt-[40px]">
-        Часто задаваемые вопросы
-      </h2>
-
-      {faqs.map((faq, index) => (
-        <DropdownItem key={index} question={faq.question} answer={faq.answer} />
-      ))}
-
-      <div className="mt-12 text-center">
-        <button className="px-6 py-3 rounded-full bg-pink-600 text-white font-semibold hover:bg-pink-700 transition">
-          Связаться с нами
-        </button>
+    <section className="min-h-screen px-6 py-24 bg-gradient-to-r from-blue-400 via-white to-blue-600 text-gray-900">
+      <div className="max-w-5xl mx-auto text-center mb-16">
+        <motion.h2
+          className="text-5xl font-extrabold bg-gradient-to-r from-blue-700 via-blue-500 to-blue-900 bg-clip-text text-transparent"
+          initial={{ opacity: 0, y: -40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          House Buying FAQs
+        </motion.h2>
+        <p className="text-gray-700 mt-4">
+          Everything you need to know about buying and selling your dream home.
+        </p>
       </div>
+
+      <div className="grid md:grid-cols-2 gap-8">
+        {faqs.map((item, index) => (
+          <motion.div
+            key={index}
+            onClick={() => toggle(index)}
+            className={`backdrop-blur-md bg-white/60 hover:bg-white/80 transition-all duration-300 
+              border border-blue-400/70 rounded-3xl p-6 shadow-lg cursor-pointer
+              hover:shadow-[0_0_60px_#3b82f680]
+              ${index % 2 === 0 ? "rotate-[-1.5deg]" : "rotate-[1.5deg]"}`}
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.08, duration: 0.6 }}
+          >
+            <div className="flex justify-between items-center">
+              <h3 className="text-xl font-semibold text-blue-700">{item.question}</h3>
+              <motion.div
+                animate={{ rotate: openIndex === index ? 180 : 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <ChevronDown className="text-blue-700" />
+              </motion.div>
+            </div>
+
+            <AnimatePresence>
+              {openIndex === index && (
+                <motion.p
+                  className="text-blue-900 mt-3 text-sm"
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.4 }}
+                >
+                  {item.answer}
+                </motion.p>
+              )}
+            </AnimatePresence>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Bottom text */}
+      <motion.div
+        className="text-center mt-20"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ delay: 0.5, duration: 0.8 }}
+      >
+        <h4 className="text-xl text-blue-800 mb-4 font-light italic">
+          Didn’t find your answer?
+        </h4>
+        <Link
+          to="/contact"
+          className="inline-block px-6 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-all duration-300 shadow-md"
+        >
+          Contact Us
+        </Link>
+      </motion.div>
     </section>
   );
 };
-

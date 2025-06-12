@@ -1,3 +1,44 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+.dot-flashing {
+  margin-right: 8px;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background-color: #a855f7;
+  color: #a855f7;
+  animation: dotFlashing 1s infinite linear alternate;
+}
+
+@keyframes dotFlashing {
+  0% {
+    opacity: 0.2;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+
+@layer utilities {
+  .bg-animated {
+    background: linear-gradient(-45deg, #1e3a8a, #3b82f6, #6366f1, #9333ea);
+    background-size: 400% 400%;
+    animation: gradientMove 10s ease infinite;
+  }
+
+  @keyframes gradientMove {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+}
