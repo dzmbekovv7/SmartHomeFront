@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/useAuthStore";
 import axios from "axios";
 import toast from "react-hot-toast";
-
+import { axiosInstance } from "../lib/axios";
 const ConfirmationPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState(""); // Добавляем состояние для email
@@ -25,7 +25,7 @@ const ConfirmationPage = () => {
 
     try {
       // Отправка email и кода на сервер
-      const response = await axios.post("/confirm-email/", {
+      const response = await axiosInstance.post("/confirm-email/", {
         email,
         confirmation_code,
       });
