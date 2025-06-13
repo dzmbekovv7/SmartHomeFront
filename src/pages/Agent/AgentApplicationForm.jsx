@@ -13,7 +13,6 @@ import {
   User
 } from "lucide-react";
 import { axiosInstance } from "../../lib/axios";
-
 const icons = [ShieldCheck, Phone, Home, FileText, Info, User];
 
 const AgentApplicationForm = () => {
@@ -42,7 +41,7 @@ const AgentApplicationForm = () => {
     setSubmitError(null);
 
     try {
-      await axiosInstance.post("http://localhost:8000/apply/", formData);
+      await axiosInstance.post("/apply/", formData);
       setSubmitSuccess("Заявка успешно отправлена!");
       setFormData({
         full_name: "",

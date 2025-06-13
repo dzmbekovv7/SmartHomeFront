@@ -10,7 +10,7 @@ export const useAdminStore = create((set, get) => ({
   fetchUnverified: async () => {
     set({ loading: true, error: null });
     try {
-      const res = await axiosInstance.get('http://127.0.0.1:8000/houses/unverified/');
+      const res = await axiosInstance.get('/houses/unverified/');
       const data = Array.isArray(res.data) ? res.data : res.data.houses || [];
       set({ unverifiedHouses: data, loading: false });
     } catch (error) {
@@ -21,7 +21,7 @@ export const useAdminStore = create((set, get) => ({
 
   verifyHouse: async (id) => {
     try {
-      await axiosInstance.post(`http://127.0.0.1:8000/houses/verify/${id}/`);
+      await axiosInstance.post(`/houses/verify/${id}/`);
       toast.success('Дом подтверждён ✅');
       get().fetchUnverified();
     } catch (error) {
@@ -31,7 +31,7 @@ export const useAdminStore = create((set, get) => ({
 
   rejectHouse: async (id) => {
     try {
-      await axiosInstance.delete(`http://127.0.0.1:8000/houses/reject/${id}/`);
+      await axiosInstance.delete(`/houses/reject/${id}/`);
       toast.success('Дом отклонён ❌');
       get().fetchUnverified();
     } catch (error) {

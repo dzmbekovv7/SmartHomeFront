@@ -15,7 +15,7 @@ export const useHouseStore = create((set, get) => ({
   fetchHouses: async () => {
     set({ loading: true, error: null });
     try {
-      const res = await axiosInstance.get('http://localhost:8000/houses/');
+      const res = await axiosInstance.get('/houses/');
       set({ houses: res.data, loading: false });
     } catch (error) {
       set({ error: error.message, loading: false });
@@ -25,7 +25,7 @@ export const useHouseStore = create((set, get) => ({
 
   fetchComments: async (houseId) => {
     try {
-      const res = await axiosInstance.get(`http://localhost:8000/houses/${houseId}/comments/`);
+      const res = await axiosInstance.get(`/houses/${houseId}/comments/`);
       set({ comments: res.data });
     } catch (err) {
       toast.error('Не удалось загрузить комментарии');
@@ -34,7 +34,7 @@ export const useHouseStore = create((set, get) => ({
 
   submitComment: async ({ comment, houseId }) => {
     try {
-      await axiosInstance.post(`http://localhost:8000/comments/create/`, {
+      await axiosInstance.post(`/comments/create/`, {
         content: comment,
         house: houseId,
       });
@@ -47,7 +47,7 @@ export const useHouseStore = create((set, get) => ({
 
   deleteComment: async ({ commentId, houseId }) => {
     try {
-      await axiosInstance.delete(`http://localhost:8000/comments/${commentId}/delete/`);
+      await axiosInstance.delete(`/comments/${commentId}/delete/`);
       toast.success('Комментарий удалён');
       await get().fetchComments(houseId);
     } catch (err) {
@@ -57,7 +57,7 @@ export const useHouseStore = create((set, get) => ({
 
   toggleLike: async (houseId) => {
     try {
-      const res = await axiosInstance.post(`http://localhost:8000/houses/${houseId}/like/`);
+      const res = await axiosInstance.post(`/houses/${houseId}/like/`);
       set({
         likeStatus: {
           liked: res.data.liked,

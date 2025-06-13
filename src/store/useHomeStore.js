@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-
+import { axiosInstance } from '../lib/axios';
 export const useHomeStore = create((set, get) => ({
   
   form: {
@@ -53,7 +53,7 @@ export const useHomeStore = create((set, get) => ({
     set({ isPredicting: true, price: null });
 
     try {
-      const res = await axios.post("http://127.0.0.1:8000/predict/price/", formattedData  );      
+      const res = await axiosInstance.post("/predict/price/", formattedData  );      
       set({ price: res.data.price });
       toast.success("Цена успешно предсказана");
     } catch (error) {

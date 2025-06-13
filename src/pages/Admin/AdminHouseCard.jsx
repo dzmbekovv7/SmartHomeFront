@@ -19,7 +19,7 @@ const HouseCard = ({ house }) => {
   alt={house.name}
   onError={(e) => (e.target.src = '/default-house.jpg')}
   className="w-full h-full object-cover rounded-t-3xl"
-/>
+/>  
 
         <div className="absolute top-2 right-2 bg-white bg-opacity-80 rounded-full px-3 py-1 text-sm shadow">
           ${house.price.toLocaleString()}

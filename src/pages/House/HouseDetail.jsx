@@ -212,7 +212,7 @@ const HouseDetail = () => {
         <button
           onClick={async () => {
             try {
-              await axiosInstance.post('http://localhost:8000/send-code/', { email: contactForm.email });
+              await axiosInstance.post('/send-code/', { email: contactForm.email });
               setCodeSent(true);
               toast.success('Код отправлен на почту');
             } catch {
@@ -235,7 +235,7 @@ const HouseDetail = () => {
           <button
             onClick={async () => {
               try {
-                const res = await axiosInstance.post('http://localhost:8000/verify-code/', {
+                const res = await axiosInstance.post('/verify-code/', {
                   email: contactForm.email,
                   code: verificationCode,
                 });
@@ -266,7 +266,7 @@ const HouseDetail = () => {
       <button
         onClick={async () => {
           try {
-            await axiosInstance.post(`http://localhost:8000/contact-seller/${house.id}/`, contactForm);
+            await axiosInstance.post(`/contact-seller/${house.id}/`, contactForm);
             toast.success('Сообщение отправлено продавцу!');
           } catch {
             toast.error('Не удалось отправить сообщение');

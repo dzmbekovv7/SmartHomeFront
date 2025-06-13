@@ -49,7 +49,7 @@ export const useRentStore = create((set, get) => ({
     set({ isPredicting: true, rent: null });
 
     try {
-      const res = await axiosInstance.post("http://127.0.0.1:8000/predict/rent/", formattedData);
+      const res = await axiosInstance.post("/predict/rent/", formattedData);
       set({ rent: res.data.rent });
       toast.success("Аренда успешно предсказана");
     } catch (error) {

@@ -59,7 +59,7 @@ const Exchange = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axiosInstance.get('http://localhost:8000/currencies/')
+    axiosInstance.get('/currencies/')
       .then((res) => {
         setCurrencies(res.data);
         setLoading(false);

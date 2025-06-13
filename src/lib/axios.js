@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const axiosInstance = axios.create({
-  baseURL: import.meta.env.MODE === "development" ? "http://127.0.0.1:8000/" : "/api",
+  baseURL: import.meta.env.MODE === "development" ? "https://smarthome-33ao.onrender.com/" : "/api",
   withCredentials: true,
 });
 

@@ -25,7 +25,7 @@ const ConfirmationPage = () => {
 
     try {
       // Отправка email и кода на сервер
-      const response = await axios.post("http://127.0.0.1:8000/confirm-email/", {
+      const response = await axios.post("/confirm-email/", {
         email,
         confirmation_code,
       });

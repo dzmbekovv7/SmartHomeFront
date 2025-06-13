@@ -3,7 +3,8 @@ import { useAuthStore } from "../store/useAuthStore";
 import { Camera, Mail, User } from "lucide-react";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
-
+import { axiosInstance } from "../lib/axios";
+axiosInstance
 const ProfilePage = () => {
   const { authUser, isUpdatingProfile, updateProfile } = useAuthStore();
   const [selectedImg, setSelectedImg] = useState(null);
@@ -21,13 +22,13 @@ const ProfilePage = () => {
 
     await updateProfile(formData);
   };
-  const BASE_URL = "http://localhost:8000/";
-  console.log(authUser?.created_at)
-  const getFullImageUrl = (path) => {
-    if (!path) return "/avatar.png";
-    return path.startsWith("http") ? path : `${BASE_URL}${path}`;
-  };
-  console.log(authUser.is_agent)
+const getFullImageUrl = (path) => {
+  if (!path) return "/avatar.png";
+  return path.startsWith("http")
+    ? path
+    : `${axiosInstance.defaults.baseURL}${path}`;
+};
+
   return (
     <div className="h-screen h-[900px]">
       <div className="max-w-2xl mx-auto p-4 py-8">

@@ -24,7 +24,7 @@ export default function MarketTrends() {
     setLoading(true);
     setError(null);
 
-    axiosInstance.get('http://localhost:8000/market-trends/', {
+    axiosInstance.get('/market-trends/', {
       params: { start_date: startDate, end_date: endDate },
     })
       .then(res => {

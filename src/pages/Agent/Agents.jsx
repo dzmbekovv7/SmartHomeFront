@@ -2,9 +2,7 @@ import React, { useEffect, useState } from "react";
 import { axiosInstance } from "../../lib/axios";
 import { motion } from "framer-motion";
 import { Building2, ThumbsUp, Home, Mail } from "lucide-react";
-const api = axiosInstance.create({
-  baseURL: "http://localhost:8000/", // базовый URL API
-});
+
 
 const RealEstatePage = () => {
   const [agencies, setAgencies] = useState([]);
@@ -15,9 +13,9 @@ const RealEstatePage = () => {
     async function fetchData() {
       try {
         const [agenciesRes, advantagesRes, reviewsRes] = await Promise.all([
-          api.get("/agencies/"),
-          api.get("/advantages/"),
-          api.get("/reviews/"),
+          axiosInstance.get("/agencies/"),
+          axiosInstance.get("/advantages/"),
+          axiosInstance.get("/reviews/"),
         ]);
         setAgencies(agenciesRes.data);
         setAdvantages(advantagesRes.data);

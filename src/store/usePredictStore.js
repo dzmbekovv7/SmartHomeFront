@@ -52,7 +52,7 @@ export const usePredictStore = create((set, get) => ({
     set({ isPredicting: true, price: null });
 
     try {
-      const res = await axiosInstance.post("http://127.0.0.1:8000/predict/price/",  formattedData);
+      const res = await axiosInstance.post("/predict/price/",  formattedData);
       set({ price: res.data.price });
       toast.success("Цена успешно предсказана");
     } catch (error) {
@@ -88,7 +88,7 @@ export const usePredictStore = create((set, get) => ({
     set({ isPredicting: true, rent: null });
 
     try {
-      const res = await axiosInstance.post("http://127.0.0.1:8000/predict/rent/", formattedData);
+      const res = await axiosInstance.post("/predict/rent/", formattedData);
       set({ rent: res.data.rent });
       toast.success("Аренда успешно предсказана");
     } catch (error) {

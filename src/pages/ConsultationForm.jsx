@@ -45,7 +45,7 @@ export default function ConsultationForm() {
     const loadingToastId = toast.loading('Sending...');
 
     try {
-      const response = await axiosInstance.post('http://localhost:8000/consultation/', formData);
+      const response = await axiosInstance.post('/consultation/', formData);
       toast.dismiss(loadingToastId);
       toast.success(response.data.success || 'Request sent successfully!');
       resetForm();

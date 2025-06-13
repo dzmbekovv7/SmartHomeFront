@@ -9,7 +9,7 @@ const UsersPage = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    axiosInstance.get("http://localhost:8000/users")
+    axiosInstance.get("/users")
       .then(res => {
         setUsers(res.data);
         setLoading(false);
@@ -22,7 +22,7 @@ const UsersPage = () => {
 
   const handleBlockUser = async (userId) => {
     try {
-      await axiosInstance.post(`http://localhost:8000/users/block/${userId}/`);
+      await axiosInstance.post(`/users/block/${userId}/`);
       setUsers(users.map(u => u.id === userId ? { ...u, is_blocked: true } : u));
     } catch {
       alert("Failed to block user");

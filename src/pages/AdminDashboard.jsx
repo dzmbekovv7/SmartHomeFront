@@ -18,14 +18,14 @@ export default function AdminDashboard() {
   }, []);
 
   useEffect(() => {
-    axios.get("http://localhost:8000/admin-stats/")
+    axios.get("/admin-stats/")
       .then(res => setStats(res.data))
       .catch(err => console.error(err));
   }, []);
 
   useEffect(() => {
     if (!startDate || !endDate) return;
-    axios.get("http://localhost:8000/graphs/all/", {
+    axios.get("/graphs/all/", {
       params: { start_date: startDate, end_date: endDate }
     })
       .then(res => setCharts(res.data.charts))

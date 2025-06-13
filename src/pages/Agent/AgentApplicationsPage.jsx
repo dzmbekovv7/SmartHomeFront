@@ -12,7 +12,7 @@ const AgentApplicationsPage = () => {
 
     const fetchApplications = async () => {
       try {
-        const response = await axiosInstance.get("http://localhost:8000/applications/");
+        const response = await axiosInstance.get("/applications/");
         setApplications(response.data);
       } catch (error) {
         console.error("Ошибка при загрузке заявок:", error);
@@ -26,7 +26,7 @@ const AgentApplicationsPage = () => {
 
   const handleApprove = async (id) => {
     try {
-      await axiosInstance.post(`http://localhost:8000/applications/${id}/approve/`);
+      await axiosInstance.post(`/applications/${id}/approve/`);
       setApplications((apps) => apps.filter((app) => app.id !== id));
     } catch (error) {
       console.error("Ошибка при одобрении заявки:", error);
@@ -35,7 +35,7 @@ const AgentApplicationsPage = () => {
 
   const handleReject = async (id) => {
     try {
-      await axiosInstance.post(`http://localhost:8000/applications/${id}/reject/`);
+      await axiosInstance.post(`/applications/${id}/reject/`);
       setApplications((apps) => apps.filter((app) => app.id !== id));
     } catch (error) {
       console.error("Ошибка при отклонении заявки:", error);
