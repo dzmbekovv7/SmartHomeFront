@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const axiosInstance = axios.create({
-  baseURL: import.meta.env.MODE === "development" ? "https://smarthome-33ao.onrender.com/" : "/api",
+  baseURL: "https://smarthome-33ao.onrender.com/", // всегда кидает запросы сюда
   withCredentials: true,
 });
 
@@ -12,4 +12,3 @@ axiosInstance.interceptors.request.use((config) => {
   }
   return config;
 });
-
