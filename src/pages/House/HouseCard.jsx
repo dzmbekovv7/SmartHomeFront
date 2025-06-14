@@ -62,7 +62,6 @@ const HouseCard = ({ house }) => {
         <img
           src={house.image}
           alt={house.name}
-          onError={(e) => (e.target.src = '/default-house.jpg')}
           className={randomStyle.image}
         />
         <div className={randomStyle.priceTag}>
